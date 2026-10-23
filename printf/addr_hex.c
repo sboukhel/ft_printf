@@ -6,40 +6,63 @@
 /*   By: sboukhel <sboukhel@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/22 13:08:36 by sboukhel          #+#    #+#             */
-/*   Updated: 2026/10/22 21:52:20 by sboukhel         ###   ########.fr       */
+/*   Updated: 2026/10/23 15:09:27 by sboukhel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "printf.h"
 
+char	*filling_buffer(char *buffer, unsigned long long h)
+{
+	int		i;
+	char	*hex;
+
+	i = 0;
+	hex = "0123456789abcdef";
+	while (h > 0)
+	{
+		buffer[i] = hex[h % 16];
+		h = h / 16;
+		i++;
+	}
+	buffer[i++] = 'x';
+	buffer[i] = '0';
+	return (buffer);
+}
+
+void	swap(char s1, char s2)
+{
+	int	tmp;
+
+	tmp = s1;
+	s1 = s2;
+	s2 = tmp;
+}
+
 void	addr_hex(void *p, int *len)
 {
-	unsigned long long i;
-	char	tmp;
-	int	j = 0;
+	unsigned long long	i;
+	char				*buffer;
+	int					index;
 
 	i = (unsigned long long)p;
-	char *buffer;
-	char *hex = "0123456789abcdef";
-	int index = 0;
-	if (*len == -1){
+	index = 0;
+	if (*len == -1)
+		return ;
+	if (i == 0)
+	{
+		(*len) = ft_putstr("(nil)");
 		return ;
 	}
-	if (i == 0){
-		buffer[0] == '0';
-	}
-	buffer = calloc(20 , sizeof(char));
-	while (i > 0){
-		buffer[index] = hex[i % 16];
-		i = i / 16;
-		index++;
-	}
-	buffer[index++] = 'x';
-	buffer[index] = '0';
-	while (index >= j){
-		tmp = buffer[index];
-		buffer[index--] = buffer[j];
-		buffer[j++] = tmp;
+	buffer = calloc(20, sizeof(char));
+	filling_buffer(buffer, i);
+	i = 0;
+	index = ft_strlen(buffer);
+	while (index >= i)
+	{
+		swap(buffer[index], buffer[i]);
+		i++;
+		index--;
 	}
 	(*len) = ft_putstr(buffer);
 }
